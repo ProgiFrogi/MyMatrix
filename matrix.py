@@ -9,12 +9,12 @@ class Tensor:
 class Matrix(Tensor):
     def __init__(self, dimension: tuple, data: list):
         if not isinstance(dimension, tuple):
-            raise 'Invalid dimension! Dimension should be tuple with len of 2'
+            raise ValueError('Invalid dimension! Dimension should be tuple with len of 2')
         if len(dimension) != 2:
-            raise 'Invalid dimension! Dimension should be tuple with len of 2'
+            raise ValueError('Invalid dimension! Dimension should be tuple with len of 2')
         self.row, self.column = dimension
         if self.row * self.column != len(data):
-            raise 'Len data should be equal to size of matrix(Prod of dimensions)'
+            raise ValueError('Len data should be equal to size of matrix(Prod of dimensions)')
         super().__init__(dimension, data)
 
     def conv_rc2i(self, row, column) -> int:
@@ -47,7 +47,7 @@ class Matrix(Tensor):
         elif isinstance(item, slice):
             item = list(range(*item.indices(self.row)))
         elif not isinstance(item, list):
-            raise ValueError
+            raise ValueError("Invalid key")
         return [rows[x * self.column + y] for x in range(len(rows) // self.column) for y in item ]
 
     def __getitem__(self, item):
@@ -65,7 +65,7 @@ class Matrix(Tensor):
             get_columns = item[1]
             if isinstance(get_rows, int) and isinstance(get_columns, int):
                 if self.row <= get_rows or self.column <= get_columns:
-                    raise 'Invalid index: index out of range'
+                    raise ValueError('Invalid index: index out of range')
                 return self.data[self.conv_rc2i(get_rows, get_columns)]
             elif isinstance(get_rows, (slice, int, list)) and isinstance(get_columns, (slice, int, list)):
                 rows = self.get_rows_by_slice(get_rows) if isinstance(get_rows, slice) else self.get_rows_by_indexes(get_rows) if isinstance(get_rows, list) else self.get_row_by_index(get_rows)
